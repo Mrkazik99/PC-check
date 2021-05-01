@@ -1,0 +1,339 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Keyboard and mouse check</title>
+        <script src="jquery.js"></script>
+        <style>
+            body {
+                font-size:smaller;
+                user-select: none; /* supported by Chrome and Opera */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+            }
+            .fullKey {
+                width:2vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+
+            .halfKey {
+                width:1vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+
+            .longKey {
+                width:5vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+
+            .halfLongKey {
+                width:4vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+
+            .veryLongKey {
+                width:6vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+            
+            .spaceKey {
+                width:18vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+
+            .quaterLongKey {
+                width:3vw;
+                height:2vw;
+                margin:5px 5px 0 5px;
+            }
+
+            .verticalKey {
+                width:2vw;
+                height:4vw;
+                margin:5px 5px -2vw 5px;
+            }
+
+            div p.label {
+                width:100%;
+                height:100%;
+                border:solid 1px black;
+                border-radius:10%;
+                text-align:center;
+                vertical-align:top;
+            }
+
+            .key-block div {
+                display:inline-block;
+            }
+
+            #keyboard {
+                max-width:60vw;
+                padding:2vw;
+                background-color: rgb(7, 255, 255);
+            }
+
+            #line1, #line2, #line3, #line4, #line5, #line6, #line7 {
+                width:100%;;
+            }
+
+            .numPad {
+                float:right;
+            }
+
+            #clickHandler {
+                width:100%;
+                height:3%;
+            }
+
+            #clicks {
+                width:100%;
+                height:100%;
+                padding:0;
+                background-color:black;
+                color:white;
+                vertical-align:center;
+                max-width:100%;
+                overflow:hidden;
+            }
+
+            #clicks p {
+                height:100%;
+                display:inline-block;
+                color:white;
+                margin: auto 1vw auto auto;
+                padding:auto;
+                font-size:larger;
+            }
+
+            .ArrowUp p{
+                transform:rotate(-90deg);
+            }
+
+            .ArrowDown p {
+                transform:rotate(90deg);
+            }
+
+            .ArrowLeft p {
+                transform:rotate(180deg);
+            }
+
+            .leftClick, .rightClick {
+                width:5vw;
+                height:2vw;
+            }
+
+            .midClick {
+                width:2vw;
+                height:2vw;
+            }
+
+            .leftClick p{
+                border-radius:0 0 0 15px;
+            }
+
+            .rightClick p{
+                border-radius:0 0 15px 0;
+            }
+        </style>
+        <script>
+            var mouseButtons = ["empty", "LMB", "MidClick", "RMB"];
+            document.onkeydown = function (e) {
+                return false;
+            }
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Alt') {
+                    e.preventDefault();
+                }
+            });
+            function startListener(el) {
+                el.addEventListener('keydown', keyDownHandler, false);
+                el.addEventListener('keyup', keyUpHandler, false);
+                el.addEventListener('mousedown', mouseDownHandler, false);
+                el.addEventListener('mouseup', mouseUpHandler, false);
+            }
+            function keyDownHandler(e) {
+                var clicked = document.createElement("p");
+                e.altKey?keyLabel="alt":keyLabel = e.key;
+                e.key == "" || e.key == " "?keyLabel="Space":keyLabel=e.key;
+                console.log(e.keyCode);
+                clicked.innerHTML = "&lt" + keyLabel.toUpperCase() + "&gt";
+                document.getElementById("clicks").prepend(clicked);
+                if(e.location == 2) {
+                    document.getElementById("k" + e.keyCode + "r").style.backgroundColor="red";
+                } else if (e.location == 3 && e.keyCode == 13) {
+                    document.getElementById("k" + e.keyCode + "r").style.backgroundColor="red";
+                } else {
+                    document.getElementById("k" + e.keyCode).style.backgroundColor="red";
+                }
+            }
+            function keyUpHandler(e) {
+                if(e.location == 2) {
+                    document.getElementById("k" + e.keyCode + "r").style.backgroundColor="white";
+                } else if (e.location == 3 && e.keyCode == 13) {
+                    document.getElementById("k" + e.keyCode + "r").style.backgroundColor="white";
+                } else {
+                    document.getElementById("k" + e.keyCode).style.backgroundColor="white";
+                }
+            }
+            function mouseDownHandler(e) {
+                var clicked = document.createElement("p");
+                clicked.innerHTML = "&lt" + mouseButtons[e.which] + "&gt";
+                document.getElementById("clicks").prepend(clicked);
+                document.getElementById(mouseButtons[e.which]).style.backgroundColor="red";
+            }
+            function mouseUpHandler(e) {
+                document.getElementById(mouseButtons[e.which]).style.backgroundColor="white";
+            }
+        </script>
+    </head>
+    <body onload="startListener(this);" oncontextmenu="return false;">
+        <div id="container">
+            <div id="keyboard">
+                <div id="clickHandler">
+                    <div id="clicks">
+    
+                    </div>
+                </div>
+                <div class="key-block">
+                    <div id="line1">
+                        <div class="fullKey ESC"><p id="k27" class="label"> ESC</p></div>
+                        <div class="fullKey Empty"></div>
+                        <div class="fullKey F1"><p id="k112" class="label">F1</p></div>
+                        <div class="fullKey F2"><p id="k113" class="label">F2</p></div>
+                        <div class="fullKey F3"><p id="k114" class="label">F3</p></div>
+                        <div class="fullKey F4"><p id="k115" class="label">F4</p></div>
+                        <div class="halfKey empty"></div>
+                        <div class="fullKey F5"><p id="k116" class="label">F5</p></div>
+                        <div class="fullKey F6"><p id="k117" class="label">F6</p></div>
+                        <div class="fullKey F7"><p id="k118" class="label">F7</p></div>
+                        <div class="fullKey F8"><p id="k119" class="label">F8</p></div>
+                        <div class="halfKey Empty"></div>
+                        <div class="fullKey F9"><p id="k120" class="label">F9</p></div>
+                        <div class="fullKey F10"><p id="k121" class="label">F10</p></div>
+                        <div class="fullKey F11"><p id="k122" class="label">F11</p></div>
+                        <div class="fullKey F12"><p id="k123" class="label">F12</p></div>
+                        <div class="fullKey End numPad"><p id="k35" class="label">End</p></div>
+                        <div class="fullKey Home numPad"><p id="k36" class="label">Home</p></div>
+                        <div class="fullKey PauseBreak numPad"><p id="k19" class="label">Pause Break</p></div>
+                        <div class="fullKey ScrollLock numPad"><p id="k145" class="label">Scr Lock</p></div>
+                        <div class="fullKey PrintScreen numPad"><p id="k44" class="label">Prt scrn</p></div>
+                    </div>
+                    <div id="line2">
+                        <div class="fullKey ~"><p id="k192" class="label">~</p></div>
+                        <div class="fullKey KB1"><p id="k49" class="label">1</p></div>
+                        <div class="fullKey KB2"><p id="k50" class="label">2</p></div>
+                        <div class="fullKey KB3"><p id="k51" class="label">3</p></div>
+                        <div class="fullKey KB4"><p id="k52" class="label">4</p></div>
+                        <div class="fullKey KB5"><p id="k53" class="label">5</p></div>
+                        <div class="fullKey KB6"><p id="k54" class="label">6</p></div>
+                        <div class="fullKey KB7"><p id="k55" class="label">7</p></div>
+                        <div class="fullKey KB8"><p id="k56" class="label">8</p></div>
+                        <div class="fullKey KB9"><p id="k57" class="label">9</p></div>
+                        <div class="fullKey KB0"><p id="k48" class="label">0</p></div>
+                        <div class="fullKey -"><p id="k173" class="label">- _</p></div>
+                        <div class="fullKey +"><p id="k61" class="label">= +</p></div>
+                        <div class="longKey BackSpace"><p id="k8" class="label">Backspace</p></div>
+                        <div class="fullKey - numPad"><p id="k109" class="label">-</p></div>
+                        <div class="fullKey * numPad"><p id="k106" class="label">*</p></div>
+                        <div class="fullKey / numPad"><p id="k111" class="label">/</p></div>
+                        <div class="fullKey NumLock numPad"><p id="k144" class="label">Num Lock</p></div>
+                        <div class="fullKey PageUp numPad"><p id="k33" class="label">Page up</p></div>
+                    </div>
+                    <div id="line3">
+                        <div class="halfLongKey Tab"><p id="k9" class="label">Tab</p></div>
+                        <div class="fullKey Q"><p id="k81" class="label">Q</p></div>
+                        <div class="fullKey W"><p id="k87" class="label">W</p></div>
+                        <div class="fullKey E"><p id="k69" class="label">E</p></div>
+                        <div class="fullKey R"><p id="k82" class="label">R</p></div>
+                        <div class="fullKey T"><p id="k84" class="label">T</p></div>
+                        <div class="fullKey Y"><p id="k89" class="label">Y</p></div>
+                        <div class="fullKey U"><p id="k85" class="label">U</p></div>
+                        <div class="fullKey I"><p id="k73" class="label">I</p></div>
+                        <div class="fullKey O"><p id="k79" class="label">O</p></div>
+                        <div class="fullKey P"><p id="k80" class="label">P</p></div>
+                        <div class="fullKey ["><p id="k219" class="label">[</p></div>
+                        <div class="fullKey ]"><p id="k221" class="label">]</p></div>
+                        <div class="halfLongKey \|"><p id="k220" class="label">\|</p></div>
+                        <div class="verticalKey NP+ numPad"><p id="k107" class="label">+</p></div>
+                        <div class="fullKey 9 numPad"><p id="k105" class="label">9</p></div>
+                        <div class="fullKey 8 numPad"><p id="k104" class="label">8</p></div>
+                        <div class="fullKey 7 numPad"><p id="k103" class="label">7</p></div>
+                        <div class="fullKey PageDown numPad"><p id="k34" class="label">Page down</p></div>
+                    </div>
+                    <div id="line4">
+                        <div class="longKey Caps"><p id="k20" class="label">Caps Lock</p></div>
+                        <div class="fullKey A"><p id="k65" class="label">A</p></div>
+                        <div class="fullKey S"><p id="k83" class="label">S</p></div>
+                        <div class="fullKey D"><p id="k68" class="label">D</p></div>
+                        <div class="fullKey F"><p id="k70" class="label">F</p></div>
+                        <div class="fullKey G"><p id="k71" class="label">G</p></div>
+                        <div class="fullKey H"><p id="k72" class="label">H</p></div>
+                        <div class="fullKey J"><p id="k74" class="label">J</p></div>
+                        <div class="fullKey K"><p id="k75" class="label">K</p></div>
+                        <div class="fullKey L"><p id="k76" class="label">L</p></div>
+                        <div class="fullKey ;"><p id="k59" class="label">;:</p></div>
+                        <div class="fullKey '"><p id="k222" class="label">'"</p></div>
+                        <div class="longKey Enter"><p id="k13" class="label">Enter</p></div>
+                        <div class="fullKey Empty numPad"></div>
+                        <div class="fullKey 6 numPad"><p id="k102" class="label">6</p></div>
+                        <div class="fullKey 5 numPad"><p id="k101" class="label">5</p></div>
+                        <div class="fullKey 4 numPad"><p id="k100" class="label">4</p></div>
+                        <div class="fullKey Insert numPad"><p id="k45" class="label">Insert</p></div>
+                    </div>
+                    <div id="line5">
+                        <div class="veryLongKey Shift"><p id="k16" class="label">Shift</p></div>
+                        <div class="fullKey Z"><p id="k90" class="label">Z</p></div>
+                        <div class="fullKey X"><p id="k88" class="label">X</p></div>
+                        <div class="fullKey C"><p id="k67" class="label">C</p></div>
+                        <div class="fullKey V"><p id="k86" class="label">V</p></div>
+                        <div class="fullKey B"><p id="k66" class="label">B</p></div>
+                        <div class="fullKey N"><p id="k78" class="label">N</p></div>
+                        <div class="fullKey M"><p id="k77" class="label">M</p></div>
+                        <div class="fullKey ,"><p id="k188" class="label">,&lt</p></div>
+                        <div class="fullKey ."><p id="k190" class="label">.&gt</p></div>
+                        <div class="fullKey /?"><p id="k191" class="label">/?</p></div>
+                        <div class="veryLongKey Shift"><p id="k16r" class="label">Shift</p></div>
+                        <div class="verticalKey NPEnter numPad"><p id="k13r" class="label">Enter</p></div>
+                        <div class="fullKey 3 numPad"><p id="k99" class="label">3</p></div>
+                        <div class="fullKey 2 numPad"><p id="k98" class="label">2</p></div>
+                        <div class="fullKey 1 numPad"><p id="k97" class="label">1</p></div>
+                        <div class="fullKey Delete numPad"><p id="k46" class="label">Delete</p></div>
+                    </div>
+                    <div id="line6">
+                        <div class="quaterLongKey CTRL"><p id="k17" class="label">CTRL</p></div>
+                        <div class="quaterLongKey Win"><p id="k91" class="label">Win</p></div>
+                        <div class="quaterLongKey ALT"><p id="k18" class="label">ALT</p></div>
+                        <div class="spaceKey Space"><p id="k32" class="label">Space</p></div>
+                        <div class="quaterLongKey ALT"><p id="k18r" class="label">ALT</p></div>
+                        <div class="quaterLongKey Win"><p id="k91r" class="label">Win</p></div>
+                        <div class="quaterLongKey Context"><p id="k93" class="label">context</p></div>
+                        <div class="quaterLongKey CTRL"><p id="k17r" class="label">CTRL</p></div>
+                        <div class="fullKey Empty numPad"></div>
+                        <div class="fullKey NP., numPad"><p id="k110" class="label">.,</p></div>
+                        <div class="longKey 0 numPad"><p id="k96" class="label">0</p></div>
+                        <div class="fullKey ArrowUp numPad"><p id="k38" class="label">></p></div>
+                    </div>
+                    <div id="line7">
+                        <div class="veryLongKey"></div>
+                        <div class="leftClick"><p id="LMB" class="label">LMB</p></div>
+                        <div class="midClick"><p id="MidClick" class="label">Mid</p></div>
+                        <div class="rightClick"><p id="RMB" class="label">RMB</p></div>
+                        <div class="fullKey Empty numPad"></div>
+                        <div class="fullKey Empty numPad"></div>
+                        <div class="fullKey Empty numPad"></div>
+                        <div class="fullKey ArrowRight numPad"><p id="k39" class="label">></p></div>
+                        <div class="fullKey ArrowDown numPad"><p id="k40" class="label">></p></div>
+                        <div class="fullKey ArrowLeft numPad"><p id="k37" class="label">></p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

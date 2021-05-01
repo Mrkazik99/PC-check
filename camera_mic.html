@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <title>Camera & mic check</title>
+        <meta charset="utf-8">
+        <script src="jquery.js"></script>
+        <script>
+            let track;
+            let chunks = [];
+            let mediaRecorder;
+            const cameraPerms = {
+                video: true
+            };
+            const micPerms = {
+                audio: true
+            }
+            function getCamera(val) {
+                if (hasGetUserMedia()) {
+                    console.log('cam');
+                    const video = document.querySelector("video");
+                    if(val == 'start') {
+                        navigator.mediaDevices.getUserMedia(cameraPerms).then((stream) => {
+                            video.srcObject = stream;
+                            window.stream = stream;
+                        });
+                    } else {
+                        if(window.stream) {
+                            window.stream.getTracks().forEach(function (track) {
+                                track.stop();
+                            });
+                        }
+                    }
+                } else {
+                    console.log('Your browser is not supported');
+                }
+            }
+            function hasGetUserMedia() {
+                return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            }
+            function enableRecorder(button) {
+                if(window.stream) {
+                    window.stream.getTracks().forEach(function (track) {
+                        track.stop();
+                    });
+                }
+                if(hasGetUserMedia()) {
+                    button.disabled = true;
+                    let recordButton = $('#startRecord');
+                    recordButton.prop('disabled', false);
+                    navigator.mediaDevices.getUserMedia(micPerms).then((stream) => {
+                        mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder.ondataavailable = function(e) {
+                            chunks.push(e.data);
+                        }
+                        recordButton.click(function() {
+                            mediaRecorder.start();
+                            console.log(mediaRecorder.state);
+                            console.log("recorder started");
+                            $(this).css('background', 'red');
+                            $(this).css('color', 'white');
+                            $(this).prop('disabled', true);
+                            $('#stopRecord').prop('disabled', false);
+                        })
+                        
+                        $('#stopRecord').click(function() {
+                            mediaRecorder.stop();
+                            console.log(mediaRecorder.state);
+                            console.log("recorder stopped");
+                            recordButton.css('background', '');
+                            recordButton.css('color', '');
+                            recordButton.prop('disabled', false);
+                            $(this).prop('disabled', true);
+                        })
+                        mediaRecorder.onstop = function(e) {
+                            console.log("recorder stopped");
+
+                            const clipName = prompt('Enter a name for your sound clip');
+
+                            const clipContainer = document.createElement('article');
+                            const clipLabel = document.createElement('p');
+                            const audio = document.createElement('audio');
+                            const deleteButton = document.createElement('button');
+
+                            clipContainer.classList.add('clip');
+                            audio.setAttribute('controls', '');
+                            deleteButton.innerHTML = "Delete";
+                            clipLabel.innerHTML = clipName;
+
+                            clipContainer.appendChild(audio);
+                            clipContainer.appendChild(clipLabel);
+                            clipContainer.appendChild(deleteButton);
+                            $('#audioSamples').append(clipContainer);
+
+                            const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+                            chunks = [];
+                            const audioURL = window.URL.createObjectURL(blob);
+                            audio.src = audioURL;
+
+                            deleteButton.onclick = function(e) {
+                                let evtTgt = e.target;
+                                evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+                            }
+                        }
+                    })
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <video autoplay id="cam"></video>
+        <button type="button" onclick="getCamera('start');">Show Camera Input</button><button type="button" onclick="getCamera('stop');">Stop capture</button><br>
+        <button type="button" onclick="enableRecorder(this);">Start recorder</button>
+        <div id="audioRecorder">
+            <button type="button" id="startRecord" disabled>Record</button><button type="button" id="stopRecord" disabled>Stop recording</button>
+            <div id="audioSamples">
+
+            </div>
+        </div>
+    </body>
+</html>
